@@ -1,0 +1,9 @@
+{
+  "name": "device-client",
+  "version": "1.0.0",
+  "main": "main/index.js",
+  "scripts": {
+    "start": "node launcher.js"
+  }
+}
+

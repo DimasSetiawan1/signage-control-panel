@@ -1,0 +1,28 @@
+{
+  "name": "signage-control-panel",
+  "version": "1.0.0",
+  "description": "Signage Control Panel - Process-Based Architecture Monorepo",
+  "license": "ISC",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"api,ws,dashboard\" -c \"blue,green,magenta\" \"npm run dev -w api\" \"npm run dev -w ws\" \"npm run dev -w dashboard\"",
+    "dev:api": "npm run dev -w api",
+    "dev:ws": "npm run dev -w ws",
+    "dev:dashboard": "npm run dev -w dashboard",
+    "dev:client": "node apps/device-client/launcher.js",
+    "dev:all": "concurrently -n \"api,ws,dash,client\" -c \"blue,green,magenta,yellow\" \"npm run dev -w api\" \"npm run dev -w ws\" \"npm run dev -w dashboard\" \"npm run dev:client\"",
+    "build": "npm run build -w dashboard",
+    "test": "node tests/test-api.js && node tests/test-ws-presence.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "electron": "^45.3.1"
+  },
+  "dependencies": {
+    "@supabase/server": "^1.9.2"
+  }
+}

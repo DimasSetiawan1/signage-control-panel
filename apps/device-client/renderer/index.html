@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signage Player</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ═══════════════════════════════════════════════
+       PAIRING MODAL
+  ═══════════════════════════════════════════════ -->
+    <div id="pairing-screen" class="hidden">
+      <div class="pairing-backdrop"></div>
+      <div class="pairing-card">
+        <div class="pairing-logo">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect width="20" height="14" x="2" y="3" rx="2" />
+            <line x1="8" x2="16" y1="21" y2="21" />
+            <line x1="12" x2="12" y1="17" y2="21" />
+          </svg>
+        </div>
+
+        <h2 class="pairing-title">Pengaturan Layar</h2>
+        <p class="pairing-sub">
+          Konfigurasikan server dan token perangkat Anda
+        </p>
+
+        <form id="pairing-form" class="pairing-form">
+          <div class="field-group">
+            <label class="field-label" for="input-server-url"
+              >WebSocket Server</label
+            >
+            <input
+              id="input-server-url"
+              type="text"
+              class="field-input"
+              value="ws://localhost:4001"
+              placeholder="ws://..."
+            />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="input-device-token"
+              >Device Token</label
+            >
+            <input
+              id="input-device-token"
+              type="text"
+              class="field-input mono"
+              placeholder="Masukkan token dari dashboard admin..."
+            />
+          </div>
+
+          <!-- Playback Mode -->
+          <div class="field-group">
+            <label class="field-label">Mode Pemutaran</label>
+            <div class="mode-grid">
+              <label class="mode-card">
+                <input
+                  type="radio"
+                  name="playbackMode"
+                  value="random"
+                  id="mode-random"
+                  checked
+                />
+                <div class="mode-card-inner">
+                  <span class="mode-icon">🔀</span>
+                  <div>
+                    <div class="mode-name">Acak (Random)</div>
+                    <div class="mode-desc">
+                      Konten berikutnya dipilih secara acak
+                    </div>
+                  </div>
+                </div>
+              </label>
+              <label class="mode-card">
+                <input
+                  type="radio"
+                  name="playbackMode"
+                  value="sequential"
+                  id="mode-sequential"
+                />
+                <div class="mode-card-inner">
+                  <span class="mode-icon">🔁</span>
+                  <div>
+                    <div class="mode-name">Berurutan</div>
+                    <div class="mode-desc">
+                      Putar konten 1, 2, 3 sesuai urutan
+                    </div>
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="preset-row">
+            <span class="preset-label">Demo cepat:</span>
+            <button type="button" id="btn-demo-token-1" class="btn-preset">
+              Lobby Utama
+            </button>
+            <button type="button" id="btn-demo-token-2" class="btn-preset">
+              Cafeteria
+            </button>
+          </div>
+
+          <button type="submit" class="btn-connect">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+            Simpan &amp; Hubungkan
+          </button>
+
+          <button
+            type="button"
+            id="btn-cancel-pairing"
+            class="btn-cancel hidden"
+          >
+            Tutup Pengaturan
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+       PLAYER STAGE
+  ═══════════════════════════════════════════════ -->
+    <div id="player-stage">
+      <!-- Dual-slot crossfade system -->
+      <div id="media-slot-a" class="media-slot active"></div>
+      <div id="media-slot-b" class="media-slot"></div>
+
+      <!-- Waiting / empty state -->
+      <div id="waiting-screen">
+        <div class="waiting-pulse">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <rect width="20" height="14" x="2" y="3" rx="2" />
+            <line x1="8" x2="16" y1="21" y2="21" />
+            <line x1="12" x2="12" y1="17" y2="21" />
+          </svg>
+        </div>
+        <h2 id="waiting-device-name">Layar Digital Signage</h2>
+        <p>Memuat Konten...</p>
+      </div>
+
+      <!-- Push priority banner (top center) -->
+      <div id="push-banner" class="hidden">
+        <div class="push-dot"></div>
+        <span id="push-banner-text">⚡ Siaran Langsung</span>
+      </div>
+
+      <!-- Status pill (bottom right, hidden by default for pure signage, enabled via CLIENT_SHOW_OVERLAY=true in .env) -->
+      <div id="status-overlay" class="status-overlay hidden">
+        <div class="status-pill">
+          <div id="status-indicator-dot" class="status-dot connecting"></div>
+          <div class="status-info">
+            <div id="overlay-device-name">Menghubungkan...</div>
+            <div id="overlay-status-text">Menyambung ke server...</div>
+          </div>
+          <button
+            id="btn-toggle-mode"
+            class="mode-badge"
+            title="Klik untuk ganti mode"
+          >
+            🔀 Acak
+          </button>
+          <button id="btn-settings" class="btn-gear" title="Pengaturan Layar">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

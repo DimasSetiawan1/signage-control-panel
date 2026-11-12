@@ -1,0 +1,77 @@
+{
+  "contents": [
+    {
+      "id": "11111111-1111-1111-1111-111111111111",
+      "title": "Selamat Datang di MJ Solution Indonesia",
+      "type": "text",
+      "payload": "Selamat Datang di PT MJ Solution Indonesia!\nInovasi Solusi Digital Signage Terpercaya.",
+      "created_at": "2026-11-12T04:39:15.081Z"
+    },
+    {
+      "id": "22222222-2222-2222-2222-222222222222",
+      "title": "Company Showcase Poster",
+      "type": "image",
+      "payload": "https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=1200&q=80",
+      "created_at": "2026-11-12T05:39:15.082Z"
+    },
+    {
+      "id": "33333333-3333-3333-3333-333333333333",
+      "title": "Demo Loop Video",
+      "type": "video",
+      "payload": "https://vjs.zencdn.net/v/oceans.mp4",
+      "created_at": "2026-11-12T06:39:15.082Z"
+    }
+  ],
+  "devices": [
+    {
+      "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "name": "Layar Lobby Utama",
+      "location": "Gedung A - Lantai 1",
+      "status": "offline",
+      "last_seen": "2026-11-12T06:49:00.935Z",
+      "device_token": "token_lobby_utama_demo_12345",
+      "created_at": "2026-11-12T01:39:15.082Z"
+    },
+    {
+      "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "name": "Layar Cafeteria",
+      "location": "Gedung B - Lantai 2",
+      "status": "offline",
+      "last_seen": null,
+      "device_token": "token_cafeteria_demo_67890",
+      "created_at": "2026-11-12T03:39:15.082Z"
+    },
+    {
+      "id": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+      "name": "Layar Meeting Room VIP",
+      "location": "Gedung A - Lantai 3",
+      "status": "offline",
+      "last_seen": null,
+      "device_token": "token_meeting_vip_demo_54321",
+      "created_at": "2026-11-12T05:39:15.082Z"
+    }
+  ],
+  "playlist_items": [
+    {
+      "id": "p1111111-1111-1111-1111-111111111111",
+      "device_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "content_id": "11111111-1111-1111-1111-111111111111",
+      "position": 0,
+      "duration_sec": 8
+    },
+    {
+      "id": "p2222222-2222-2222-2222-222222222222",
+      "device_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "content_id": "22222222-2222-2222-2222-222222222222",
+      "position": 1,
+      "duration_sec": 12
+    },
+    {
+      "id": "p3333333-3333-3333-3333-333333333333",
+      "device_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "content_id": "33333333-3333-3333-3333-333333333333",
+      "position": 2,
+      "duration_sec": 15
+    }
+  ]
+}
